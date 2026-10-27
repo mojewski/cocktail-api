@@ -9,6 +9,7 @@ datasource db {
 model Cocktail {
   id           String     @id @default(uuid())
   name         String     @unique
+  category     String
   description  String?
   instructions String
   createdAt    DateTime   @default(now())
