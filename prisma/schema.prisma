@@ -7,7 +7,7 @@ datasource db {
 }
 
 model Cocktail {
-  id           String     @id @default(uuid())
+  id           Int        @id @default(autoincrement())
   name         String     @unique
   category     String
   description  String?
@@ -19,7 +19,7 @@ model Cocktail {
 }
 
 model Ingredient {
-  id           String     @id @default(uuid())
+  id           Int        @id @default(autoincrement())
   name         String     @unique
   description  String?
   withAlcohol  Boolean    @default(false)
@@ -31,9 +31,9 @@ model Ingredient {
 }
 
 model CocktailIngredient {
-  id           String     @id @default(uuid())
-  cocktailId   String
-  ingredientId String
+  id           Int       @id @default(autoincrement())
+  cocktailId   Int
+  ingredientId Int
   amount       Float
   unit         String
 
