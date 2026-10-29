@@ -16,6 +16,9 @@ model Cocktail {
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
+  userId       Int?
+  author       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+
   ingredients  CocktailIngredient[]
 }
 
@@ -27,6 +30,9 @@ model Ingredient {
   imageUrl     String?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
+
+  userId       Int?
+  author       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   cocktails CocktailIngredient[]
 }
@@ -42,4 +48,23 @@ model CocktailIngredient {
   ingredient   Ingredient @relation(fields: [ingredientId], references: [id], onDelete: Cascade)
 
   @@unique([cocktailId, ingredientId])
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  name         String    @unique
+  type         Role      @default(USER)
+  email        String    @unique
+  password     String
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  cocktails    Cocktail[]
+  ingredients  Ingredient[]
+}
+
+enum Role {
+  USER
+  ADMIN
 }
