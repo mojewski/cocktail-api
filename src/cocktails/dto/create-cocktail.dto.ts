@@ -1,4 +1,12 @@
-import { IsArray, IsNotEmpty, IsOptional, IsString, Length, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Length,
+  ValidateNested,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateCocktailIngredientDto } from './create-cocktail-ingredient.dto';
 
@@ -20,6 +28,10 @@ export class CreateCocktailDto {
   @IsString({ message: 'Instructions should be a string' })
   @IsNotEmpty({ message: 'Instructions are required' })
   instructions: string;
+
+  @IsOptional()
+  @IsUrl({}, { message: 'URL format required'})
+  imageUrl?: string;
 
   @IsArray()
   @ValidateNested({ each: true })

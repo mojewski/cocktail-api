@@ -2,6 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateCocktailDto } from './dto/create-cocktail.dto';
 import { UpdateCocktailDto } from './dto/update-cocktail.dto';
 import { PrismaService } from '../prisma/prisma.service';
+import { paginate } from '../common/utils/paginate';
+import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 
 @Injectable()
 export class CocktailsService {
@@ -33,8 +35,35 @@ export class CocktailsService {
     });
   }
 
-  async findAll() {
-    return this.prismaService.cocktail.findMany();
+  async findAll(paginationQuery: PaginationQueryDto) {
+    const { page, limit, search, category, sortBy, sortOrder } = paginationQuery;
+    const where: any = {};
+
+    if (search) {
+      where.name = { contains: search, mode: 'insensitive' };
+    }
+    if (category) {
+      where.category = category;
+    }
+
+    return paginate(
+        this.prismaService.cocktail,
+        {
+          include: {
+            ingredients: {
+              include: {
+                ingredient: true,
+              }
+            }
+          },
+          where,
+          orderBy: sortBy
+            ? { [sortBy]: sortOrder || 'asc' }
+            : { id: 'asc' },
+        },
+        page,
+        limit,
+      );
   }
 
   async findOne(id: number) {
