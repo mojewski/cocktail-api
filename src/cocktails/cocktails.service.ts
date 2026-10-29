@@ -36,7 +36,7 @@ export class CocktailsService {
   }
 
   async findAll(paginationQuery: PaginationQueryDto) {
-    const { page, limit, search, category, sortBy, sortOrder } = paginationQuery;
+    const { page, limit, search, category, ingredientId, sortBy, sortOrder } = paginationQuery;
     const where: any = {};
 
     if (search) {
@@ -44,6 +44,13 @@ export class CocktailsService {
     }
     if (category) {
       where.category = category;
+    }
+    if (ingredientId) {
+      where.ingredients = {
+        some: {
+          ingredientId: Number(ingredientId),
+        }
+      };
     }
 
     return paginate(
