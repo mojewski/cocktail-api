@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { CocktailsService } from './cocktails.service';
 import { CreateCocktailDto } from './dto/create-cocktail.dto';
 import { UpdateCocktailDto } from './dto/update-cocktail.dto';
+import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 
 @Controller('cocktails')
 export class CocktailsController {
@@ -22,8 +24,8 @@ export class CocktailsController {
   }
 
   @Get()
-  findAll() {
-    return this.cocktailsService.findAll();
+  findAll(@Query() paginationQuery: PaginationQueryDto) {
+    return this.cocktailsService.findAll(paginationQuery);
   }
 
   @Get(':id')

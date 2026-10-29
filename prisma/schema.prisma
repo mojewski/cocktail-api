@@ -12,6 +12,7 @@ model Cocktail {
   category     String
   description  String?
   instructions String
+  imageUrl     String?
   createdAt    DateTime   @default(now())
   updatedAt    DateTime   @updatedAt
 
