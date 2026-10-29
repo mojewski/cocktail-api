@@ -24,6 +24,11 @@ export class PaginationQueryDto {
   category?: string;
 
   @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  ingredientId?: number;
+
+  @IsOptional()
   @IsString()
   sortBy?: string;
 
