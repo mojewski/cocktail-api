@@ -16,7 +16,7 @@ import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
-import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery } from '@nestjs/swagger';
 
 @Controller('ingredients')
 export class IngredientsController {
@@ -32,6 +32,9 @@ export class IngredientsController {
 
   @Get()
   @ApiOperation({ summary: 'Get all ingredients' })
+  @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+  @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+  @ApiQuery({ name: 'search', required: false, type: String })
   findAll(@Query() paginationQuery: PaginationQueryDto) {
     return this.ingredientsService.findAll(paginationQuery);
   }
