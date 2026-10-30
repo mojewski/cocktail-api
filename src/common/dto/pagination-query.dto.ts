@@ -1,5 +1,13 @@
-import { IsIn, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
-import { Type } from 'class-transformer';
+import {
+  IsBoolean,
+  IsIn,
+  IsInt,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
+import { Type, Transform } from 'class-transformer';
 
 export class PaginationQueryDto {
   @IsOptional()
@@ -27,6 +35,15 @@ export class PaginationQueryDto {
   @Type(() => Number)
   @IsInt()
   ingredientId?: number;
+
+  @IsOptional()
+  @Transform(({value}) => {
+    if(value === 'true') return true;
+    if (value === 'false') return false;
+    return value;
+  })
+  @IsBoolean()
+  withAlcohol?: boolean;
 
   @IsOptional()
   @IsString()

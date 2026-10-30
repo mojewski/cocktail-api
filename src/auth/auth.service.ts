@@ -27,7 +27,7 @@ export class AuthService {
 
     const newUser = await this.usersService.createUser({ ...registerDto, password: hashedPassword})
 
-    const payload = { sub: newUser.id, email: newUser.email, role: newUser.type };
+    const payload = { sub: newUser.id, email: newUser.email, role: newUser.role };
 
     return { access_token: await this.jwtService.signAsync(payload) }
   }
@@ -45,7 +45,7 @@ export class AuthService {
       throw new UnauthorizedException('Incorrect email or password');
     }
 
-    const payload = { sub: user.id, email: user.email, role: user.type, };
+    const payload = { sub: user.id, email: user.email, role: user.role, };
 
     return { access_token: await this.jwtService.signAsync(payload) };
   }
