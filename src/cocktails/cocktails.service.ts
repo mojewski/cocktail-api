@@ -8,7 +8,7 @@ import { UpdateCocktailDto } from './dto/update-cocktail.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { paginate } from '../common/utils/paginate';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
-import { Role } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 
 const INCLUDE = {
     ingredients: {
@@ -31,14 +31,14 @@ export class CocktailsService {
 
   async create(
     createCocktailDto: CreateCocktailDto,
-    user: { sub: number; role: Role },
+    user: User,
   ) {
     const { ingredients, ...cocktailData } = createCocktailDto;
 
     return this.prismaService.cocktail.create({
       data: {
         ...cocktailData,
-        author: { connect: { id: user.sub} },
+        author: { connect: { id: user.id} },
         ...(ingredients && ingredients.length > 0
           ? {
               ingredients: {
@@ -100,11 +100,11 @@ export class CocktailsService {
   async update(
     id: number,
     updateCocktailDto: UpdateCocktailDto,
-    user: { sub: number; role: Role },
+    user: User,
   ) {
     const cocktail = await this.findOne(id);
 
-    if (cocktail.userId !== user.sub && user.role !== Role.ADMIN) {
+    if (cocktail.userId !== user.id && user.role !== Role.ADMIN) {
       throw new ForbiddenException('You are not allowed to edit cocktails');
     }
 
@@ -129,10 +129,10 @@ export class CocktailsService {
     });
   }
 
-  async remove(id: number, user: { sub: number; role: Role }) {
+  async remove(id: number, user: User) {
     const cocktail = await this.findOne(id);
 
-    if (cocktail.userId !== user.sub && user.role !== Role.ADMIN) {
+    if (cocktail.userId !== user.id && user.role !== Role.ADMIN) {
       throw new ForbiddenException('You are not allowed to delete cocktails');
     }
 

@@ -4,7 +4,7 @@ import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 import { PrismaService } from '../prisma/prisma.service';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 import { paginate } from '../common/utils/paginate';
-import { Role } from '@prisma/client';
+import { Role, User } from '@prisma/client';
 
 @Injectable()
 export class IngredientsService {
@@ -12,27 +12,27 @@ export class IngredientsService {
 
   async create(
     createIngredientDto: CreateIngredientDto,
-    user: { sub: number; role: Role },
+    user: User,
   ) {
 
     return this.prismaService.ingredient.create({
       data: {
         ...createIngredientDto,
-        author: { connect: { id: user.sub } },
+        author: { connect: { id: user.id } },
       },
     });
   }
 
   async findAll(paginationQuery: PaginationQueryDto) {
-    const { page, limit, search, category, sortBy, sortOrder } =
+    const { page, limit, search, withAlcohol, sortBy, sortOrder } =
       paginationQuery;
     const where: any = {};
 
     if (search) {
       where.name = { contains: search, mode: 'insensitive' };
     }
-    if (category) {
-      where.category = category;
+    if(typeof withAlcohol === 'boolean') {
+      where.withAlcohol = withAlcohol;
     }
 
     return paginate(
@@ -61,11 +61,11 @@ export class IngredientsService {
   async update(
     id: number,
     updateIngredientDto: UpdateIngredientDto,
-    user: { sub: number; role: Role },
+    user: User,
   ) {
     const ingredient = await this.findOne(id);
 
-    if (ingredient.userId !== user.sub && user.role !== Role.ADMIN) {
+    if (ingredient.userId !== user.id && user.role !== Role.ADMIN) {
       throw new ForbiddenException(
         'You are not allowed to edit this ingredient',
       );
@@ -77,10 +77,10 @@ export class IngredientsService {
     });
   }
 
-  async remove(id: number, user: { sub: number; role: Role }) {
+  async remove(id: number, user: User) {
     const ingredient = await this.findOne(id);
 
-    if (ingredient.userId !== user.sub && user.role !== Role.ADMIN) {
+    if (ingredient.userId !== user.id && user.role !== Role.ADMIN) {
       throw new ForbiddenException(
         'You are not allowed to delete this ingredient',
       );

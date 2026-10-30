@@ -16,6 +16,7 @@ import { CreateIngredientDto } from './dto/create-ingredient.dto';
 import { UpdateIngredientDto } from './dto/update-ingredient.dto';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 
 @Controller('ingredients')
 export class IngredientsController {
@@ -23,22 +24,28 @@ export class IngredientsController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Create ingredient' })
   create(@Req() req: any, @Body() createIngredientDto: CreateIngredientDto) {
     return this.ingredientsService.create(createIngredientDto, req.user);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all ingredients' })
   findAll(@Query() paginationQuery: PaginationQueryDto) {
     return this.ingredientsService.findAll(paginationQuery);
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get ingredient by ID' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.ingredientsService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Update ingredient' })
   update(
     @Req() req: any,
     @Param('id', ParseIntPipe) id: number,
@@ -49,6 +56,8 @@ export class IngredientsController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Delete ingredient' })
   remove(@Req() req: any, @Param('id', ParseIntPipe) id: number) {
     return this.ingredientsService.remove(id, req.user);
   }

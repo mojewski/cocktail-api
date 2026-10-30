@@ -16,29 +16,37 @@ import { CreateCocktailDto } from './dto/create-cocktail.dto';
 import { UpdateCocktailDto } from './dto/update-cocktail.dto';
 import { PaginationQueryDto } from '../common/dto/pagination-query.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Cocktails')
 @Controller('cocktails')
 export class CocktailsController {
   constructor(private readonly cocktailsService: CocktailsService) {}
 
   @Post()
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Create cocktail' })
   create(@Req() req: any, @Body() createCocktailDto: CreateCocktailDto) {
     return this.cocktailsService.create(createCocktailDto, req.user);
   }
 
   @Get()
+  @ApiOperation({ summary: 'Get all cocktails' })
   findAll(@Query() paginationQuery: PaginationQueryDto) {
     return this.cocktailsService.findAll(paginationQuery);
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get cocktail by ID' })
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.cocktailsService.findOne(id);
   }
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Update cocktail' })
   update(
     @Req() req: any,
     @Param('id', ParseIntPipe) id: number,
@@ -49,6 +57,8 @@ export class CocktailsController {
 
   @Delete(':id')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Delete cocktail' })
   remove(@Req() req: any, @Param('id', ParseIntPipe) id: number) {
     return this.cocktailsService.remove(id, req.user);
   }
