@@ -1,6 +1,6 @@
 # Cocktail Management REST API
 
-A REST API for managing cocktails and ingredients, built with **NestJS**, **Prisma ORM**, and **PostgreSQL**. Created as a recruitment project for a Solvro university research group.
+A REST API for managing cocktails and ingredients, built with **NestJS**, **Prisma ORM**, and **PostgreSQL**. Created as a recruitment project for a SOLVRO university research group.
 
 ---
 
